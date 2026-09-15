@@ -46,22 +46,20 @@ inline void apply_stencil(const Grid &old_grid, Grid &new_grid) {
 
   int rows = old_grid.rows_;
   int cols = old_grid.cols_;
-  std::vector<std::vector<double>> oldarr = old_grid.array;
-  std::vector<std::vector<double>> newarr = new_grid.array;
   for (int i = 1; i < rows-1; i++) {
     for (int j = 1; j < cols-1; j++) {
-      newarr[i][j] = 0.5*(oldarr[i][j]) + 0.125*(oldarr[i-1][j] + oldarr[i+1][j] + oldarr[i][j-1] + oldarr[i][j+1]);
+      new_grid.array[i][j] = 0.5*(old_grid.array[i][j]) + 0.125*(old_grid.array[i-1][j] + old_grid.array[i+1][j] + old_grid.array[i][j-1] + old_grid.array[i][j+1]);
     }
   }
   for (int i = 0; i < rows; i++) {
-    newarr[i][0] = oldarr[i][0];
-    newarr[i][cols-1] = oldarr[i][cols-1];
+    new_grid.array[i][0] = old_grid.array[i][0];
+    new_grid.array[i][cols-1] = old_grid.array[i][cols-1];
   }
   for (int i = 1; i < cols-1; i++) {
-    newarr[0][i] = oldarr[0][i];
-    newarr[rows-1][i] = oldarr[rows-1][i];
+    new_grid.array[0][i] = old_grid.array[0][i];
+    new_grid.array[rows-1][i] = old_grid.array[rows-1][i];
 
   }
-  new_grid.array = newarr;
+  new_grid.array = new_grid.array;
 
 }
