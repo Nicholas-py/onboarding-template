@@ -25,16 +25,16 @@ public:
   double &operator()(std::size_t i, std::size_t j);
   double operator()(std::size_t i, std::size_t j) const;
 
-  [[nodiscard]] std::size_t rows() const {
+  std::size_t rows() const {
     return rows_;
   }
-  [[nodiscard]] std::size_t cols() const {
+  std::size_t cols() const {
     return cols_;
   }
-  [[nodiscard]] std::size_t maxrow() const {
+  std::size_t maxrow() const {
     return maxrow_;
   }
-  [[nodiscard]] std::size_t maxcol() const {
+  std::size_t maxcol() const {
     return maxcol_;
   }
 
@@ -66,13 +66,14 @@ inline double Grid::operator()(std::size_t i, std::size_t j) const {
 }
 
 inline void apply_stencil(const Grid &old_grid, Grid &new_grid) {
+  #pragma omp parallel for
   for (std::size_t i = 1; i < (old_grid.maxrow()); i++) {
     std::size_t i2 = i*old_grid.cols();
     for (std::size_t j = 1; j < old_grid.maxcol(); j++) {
       new_grid.array[i2+j] = 0.5*(old_grid.array[i2+j]) +0.125*(old_grid.array[i2+j-1] + old_grid.array[i2+j+1] + old_grid.array[i2+j+old_grid.cols()] + old_grid.array[i2+j-old_grid.cols()]);
     }
 
-    //Set the sides to the previous boundary conditions
+    //Set the first and last cell of each row
     new_grid.array[i2] = old_grid.array[i2];
     new_grid.array[old_grid.cols()-1+i2] = old_grid.array[old_grid.cols()-1+i2];
 
