@@ -25,16 +25,16 @@ public:
   double &operator()(std::size_t i, std::size_t j);
   double operator()(std::size_t i, std::size_t j) const;
 
-  int rows() const {
+  [[nodiscard]] std::size_t rows() const {
     return rows_;
   }
-  int cols() const {
+  [[nodiscard]] std::size_t cols() const {
     return cols_;
   }
-  int maxrow() const {
+  [[nodiscard]] std::size_t maxrow() const {
     return maxrow_;
   }
-  int maxcol() const {
+  [[nodiscard]] std::size_t maxcol() const {
     return maxcol_;
   }
 
@@ -68,17 +68,17 @@ inline double Grid::operator()(std::size_t i, std::size_t j) const {
 inline void apply_stencil(const Grid &old_grid, Grid &new_grid) {
 
   #pragma omp simd
-  for (int i = 1; i < old_grid.maxrow(); i++) {
-    for (int j = 1; j < old_grid.maxcol(); j++) {
+  for (std::size_t i{1}; i < old_grid.maxrow(); i++) {
+    for (std::size_t j{1}; j < old_grid.maxcol(); j++) {
       new_grid.array[i][j] = 0.5*(old_grid.array[i][j]) +0.125*(old_grid.array[i-1][j] + old_grid.array[i+1][j] + old_grid.array[i][j-1] + old_grid.array[i][j+1]);
     }
   }
 
-  for (int i = 0; i < old_grid.rows(); i++) {
+  for (std::size_t i = 0; i < old_grid.rows(); i++) {
     new_grid.array[i][0] = old_grid.array[i][0];
     new_grid.array[i][old_grid.maxcol()] = old_grid.array[i][old_grid.maxcol()];
   }
-  for (int i = 1; i < old_grid.maxcol(); i++) {
+  for (std::size_t i = 1; i < old_grid.maxcol(); i++) {
     new_grid.array[0][i] = old_grid.array[0][i];
     new_grid.array[old_grid.maxrow()][i] = old_grid.array[old_grid.maxrow()][i];
   }
