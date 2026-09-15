@@ -67,7 +67,7 @@ inline double Grid::operator()(std::size_t i, std::size_t j) const {
 
 inline void apply_stencil(const Grid &old_grid, Grid &new_grid) {
 
-
+  #pragma omp simd
   for (int i = 1; i < old_grid.maxrow(); i++) {
     for (int j = 1; j < old_grid.maxcol(); j++) {
       new_grid.array[i][j] = 0.5*(old_grid.array[i][j]) +0.125*(old_grid.array[i-1][j] + old_grid.array[i+1][j] + old_grid.array[i][j-1] + old_grid.array[i][j+1]);

@@ -8,3 +8,8 @@ ctest --preset benchmark --output-on-failure
 .\build\benchmark\uwhpc_benchmark
 .\build\benchmark\uwhpc_benchmark
 .\build\benchmark\uwhpc_benchmark
+.\build\benchmark\uwhpc_benchmark
+.\build\benchmark\uwhpc_benchmark
+.\build\benchmark\uwhpc_benchmark
+.\build\benchmark\uwhpc_benchmark
+.\build\benchmark\uwhpc_benchmark
