@@ -47,6 +47,11 @@ Use the commands above rather than an IDE's own CMake integration. Those default
 to a Debug build, which will cost you most of your score. See the
 [problem statement](https://docs.uwhpc.com/onboarding/problem-statement/) for what the number means.
 
+Run them all together with:
+```
+cmake --preset benchmark ; cmake --build --preset benchmark ; ctest --preset benchmark --output-on-failure ; ./build/benchmark/uwhpc_benchmark
+```
+
 ## Submitting
 
 Submissions are a **pull request from your own fork** — no credentials or
