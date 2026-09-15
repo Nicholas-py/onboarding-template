@@ -43,23 +43,19 @@ inline double Grid::operator()(std::size_t i, std::size_t j) const {
 
 inline void apply_stencil(const Grid &old_grid, Grid &new_grid) {
 
-
-  int rows = old_grid.rows_;
-  int cols = old_grid.cols_;
-  for (int i = 1; i < rows-1; i++) {
-    for (int j = 1; j < cols-1; j++) {
+  for (int i = 1; i < old_grid.rows_-1; i++) {
+    for (int j = 1; j < old_grid.cols_-1; j++) {
       new_grid.array[i][j] = 0.5*(old_grid.array[i][j]) + 0.125*(old_grid.array[i-1][j] + old_grid.array[i+1][j] + old_grid.array[i][j-1] + old_grid.array[i][j+1]);
     }
   }
-  for (int i = 0; i < rows; i++) {
+  for (int i = 0; i < old_grid.rows_; i++) {
     new_grid.array[i][0] = old_grid.array[i][0];
-    new_grid.array[i][cols-1] = old_grid.array[i][cols-1];
+    new_grid.array[i][old_grid.cols_-1] = old_grid.array[i][old_grid.cols_-1];
   }
-  for (int i = 1; i < cols-1; i++) {
+  for (int i = 1; i < old_grid.cols_-1; i++) {
     new_grid.array[0][i] = old_grid.array[0][i];
-    new_grid.array[rows-1][i] = old_grid.array[rows-1][i];
+    new_grid.array[old_grid.rows_-1][i] = old_grid.array[old_grid.rows_-1][i];
 
   }
-  new_grid.array = new_grid.array;
 
 }
