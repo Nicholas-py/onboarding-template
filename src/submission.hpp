@@ -20,7 +20,7 @@ private:
 public:
   Grid(std::size_t rows, std::size_t cols);
 
-  std::vector<std::vector<double>> array;
+  std::vector<double> array;
 
   double &operator()(std::size_t i, std::size_t j);
   double operator()(std::size_t i, std::size_t j) const;
@@ -53,33 +53,34 @@ void apply_stencil(const Grid &old_grid, Grid &new_grid);
 Grid::Grid(std::size_t rows, std::size_t cols) {
   setrowcol(rows, cols);
   
-  std::vector<std::vector<double>> data(rows, std::vector<double>(cols, 0));
+  std::vector<double> data(rows*cols , 0);
   this->array = data;
 }
 
 inline double& Grid::operator()(std::size_t i, std::size_t j) {
-  return this->array[i][j];
+  return this->array[i*cols_+j];
 }
 
 inline double Grid::operator()(std::size_t i, std::size_t j) const {
-  return this->array[i][j];
+  return this->array[i*cols_+j];
 }
 
 inline void apply_stencil(const Grid &old_grid, Grid &new_grid) {
-
-  #pragma omp simd
-  for (std::size_t i{1}; i < old_grid.maxrow(); i++) {
-    for (std::size_t j{1}; j < old_grid.maxcol(); j++) {
-      new_grid.array[i][j] = 0.5*(old_grid.array[i][j]) +0.125*(old_grid.array[i-1][j] + old_grid.array[i+1][j] + old_grid.array[i][j-1] + old_grid.array[i][j+1]);
+  for (std::size_t i = 1; i < (old_grid.maxrow()); i++) {
+    std::size_t i2 = i*old_grid.cols();
+    for (std::size_t j = 1; j < old_grid.maxcol(); j++) {
+      new_grid.array[i2+j] = 0.5*(old_grid.array[i2+j]) +0.125*(old_grid.array[i2+j-1] + old_grid.array[i2+j+1] + old_grid.array[i2+j+old_grid.cols()] + old_grid.array[i2+j-old_grid.cols()]);
     }
+
+    //Set the sides to the previous boundary conditions
+    new_grid.array[i2] = old_grid.array[i2];
+    new_grid.array[old_grid.cols()-1+i2] = old_grid.array[old_grid.cols()-1+i2];
+
   }
 
-  for (std::size_t i = 0; i < old_grid.rows(); i++) {
-    new_grid.array[i][0] = old_grid.array[i][0];
-    new_grid.array[i][old_grid.maxcol()] = old_grid.array[i][old_grid.maxcol()];
-  }
-  for (std::size_t i = 1; i < old_grid.maxcol(); i++) {
-    new_grid.array[0][i] = old_grid.array[0][i];
-    new_grid.array[old_grid.maxrow()][i] = old_grid.array[old_grid.maxrow()][i];
+  //Top and bottom row
+  for (std::size_t i = 0; i < old_grid.cols(); i++) {
+    new_grid.array[i] = old_grid.array[i];
+    new_grid.array[old_grid.cols()*old_grid.rows()-1-i] = old_grid.array[old_grid.cols()*old_grid.rows()-1-i];
   }
 }
