@@ -49,7 +49,7 @@ to a Debug build, which will cost you most of your score. See the
 
 Run them all together with:
 ```
-cmake --preset benchmark ; cmake --build --preset benchmark ; ctest --preset benchmark --output-on-failure ; ./build/benchmark/uwhpc_benchmark
+cmd.exe /c 'run.bat'
 ```
 
 ## Submitting
