@@ -16,6 +16,7 @@ private:
   const std::size_t cols_;
   const std::size_t maxrow_;
   const std::size_t maxcol_;
+  const std::size_t maxindex_;
 
 public:
   Grid(std::size_t rows, std::size_t cols);
@@ -37,6 +38,10 @@ public:
   std::size_t maxcol() const {
     return maxcol_;
   }
+  std::size_t maxindex() const {
+    return maxindex_;
+  }
+
 
 };
 
@@ -49,6 +54,7 @@ Grid::Grid(std::size_t rows, std::size_t cols)
   cols_(cols), 
   maxrow_(rows-1), 
   maxcol_(cols-1), 
+  maxindex_(rows*cols-1),
   array(rows*cols, 0)
   {  }
 
@@ -71,7 +77,6 @@ inline void apply_stencil(const Grid &old_grid, Grid &new_grid) {
     new_grid.array[i2] = old_grid.array[i2];
     new_grid.array[old_grid.cols()-1+i2] = old_grid.array[old_grid.cols()-1+i2];
 
-    #pragma omp simd
     for (std::size_t j = 1; j < old_grid.maxcol(); j++) {
       
       new_grid.array[i2+j] = 0.5*(old_grid.array[i2+j]) +0.125*(old_grid.array[i2+j-1] + old_grid.array[i2+j+1] + old_grid.array[i2+j+old_grid.cols()] + old_grid.array[i2+j-old_grid.cols()]);
@@ -83,6 +88,6 @@ inline void apply_stencil(const Grid &old_grid, Grid &new_grid) {
   //Top and bottom row
   for (std::size_t i = 0; i < old_grid.cols(); i++) {
     new_grid.array[i] = old_grid.array[i];
-    new_grid.array[old_grid.cols()*old_grid.rows()-1-i] = old_grid.array[old_grid.cols()*old_grid.rows()-1-i];
+    new_grid.array[old_grid.maxindex()-i] = old_grid.array[old_grid.maxindex()-i];
   }
 }
